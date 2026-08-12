@@ -1,0 +1,5 @@
+# 大数据文件超 GitHub 100MB 限制，不纳入仓库（见 README）
+*.pkl
+__pycache__/
+*.pyc
+.DS_Store
