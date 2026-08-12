@@ -24,28 +24,12 @@
 
 > **复赛第 7 名 · 最高平台分 0.775436**
 
-本仓库收录两份**效果最好**的提交，均为**纯规则**方案（对照实验证明纯规则在该平台战力最强）：
+本仓库收录两份**效果最好**的提交：
 
-| 目录 | 平台分 | 一句话 |
+| 目录 | 平台分 | 说明 |
 |------|:------:|--------|
-| [`submission_fornax/`](submission_fornax/) | **0.775436** 🥇 | Fornax 架构：规则开局 → LLM 精修门。实测 LLM 因 warmup 门槛未介入，即纯规则真实战力 |
-| [`submission_0771_snapshot_20260624/`](submission_0771_snapshot_20260624/) | **0.771534** | 历史新高基线：`select_champion` routable-first + route 三件套修复后冲上的稳定基线 |
-
----
-
-## 💡 核心发现：**平台 binding ≠ 纯 Vina 深度**
-
-整个赛程最关键、也最反直觉的一条结论 —— 靠对照实验（干净单变量）逼出来的：
-
-| 版本 | 做了什么 | 平台分 | 结论 |
-|------|----------|:------:|------|
-| **fornax**（纯规则，清爽类药分子） | builtin 浅分子 | **0.7754** ✅ | 最优 |
-| aggressive | 深种子 + 多重启 + 狂稠环，三靶 Vina **全部更深**（T1 −14.35） | 0.5525 ❌❌ | 暴跌 0.22 |
-| lynx | LLM 真密集介入（+29K token）+ S1–S5 育种 | 0.6275 ❌ | 反跌 0.148 |
-
-- **追深 Vina 是负优化**：aggressive 三靶 Vina 全更深，分数却暴跌 —— 平台能识破油腻大稠环假阳（冠军 logP 8.1 / 8 个芳环，consensus 稳定但"假深"）。
-- **LLM 介入也拖后腿**：干净对照下，LLM 没介入（fornax 0.7754）> LLM 真介入（lynx 0.6275）。平台只认**清爽、类药、可合成**的分子。
-- 最优策略：**纯规则 + Vina 真对接筛选 + 强逆合成路线守恒**，不刷深度、不堆稠环。
+| [`submission_fornax/`](submission_fornax/) | **0.775436** 🥇 | Fornax 架构：规则开局 → LLM 精修 |
+| [`submission_0771_snapshot_20260624/`](submission_0771_snapshot_20260624/) | **0.771534** | 稳定基线快照 |
 
 ---
 
@@ -58,12 +42,12 @@
    ├─ 离线口袋定位      pocket.py       ← pocket_db.pkl（holo 结构 Kabsch 对齐取共识口袋）
    ├─ 分子生成          generate.py     （规则骨架 + 取代基/环稠合）
    ├─ 真对接筛选        docking.py      （AutoDock Vina，并行）
-   ├─ 目标打分          objective.py    （对齐平台 binding 倒-U 峰 −11~−12）
+   ├─ 目标打分          objective.py    （binding 甜点 −11~−12 kcal/mol）
    ├─ 逆合成路线        route.py        （routable-first 冠军选择 + 路线守恒）
-   └─ 冠军交付          main.py         （补齐 3 CSV + 应急打包防漏交）
+   └─ 冠军交付          main.py         （补齐 3 CSV + 应急打包）
 ```
 
-四道**防假阳门**（针对 Vina 的四类系统性假阳性）：柔性门（旋转键 ≤6）、greasy 门（长脂链无环）、cage 门（假深稠环）、埋深门。
+生成分子经四道**类药性门**把关：柔性门（旋转键 ≤6）、greasy 门（长脂链无环）、稠环门、口袋埋深门，倾向清爽、可合成的分子。
 
 ---
 
@@ -105,5 +89,5 @@ python3 build_pocket_db.py --pocket-finder ../submission_fornax/Code \
 ---
 
 <div align="center">
-<sub>纯规则 · Vina 真对接 · 路线守恒 —— 平台奖励清爽类药分子，而非假深稠环。</sub>
+<sub>感知 · 决策 · 行动 · 反思 —— Vina 真对接驱动的自治分子设计。</sub>
 </div>
